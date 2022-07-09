@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from 'react-router-dom'
+import { useDispatch } from 'react-redux';
 import { styled, alpha } from "@mui/material/styles";
 import { Container, Typography, InputBase, Button, Grid } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 
 import { useAuth0 } from "@auth0/auth0-react";
-import { fetchCity } from "../api/weather.service";
 import Loading from "../components/loading";
+import { fetchCityWeather } from "../redux/actions";
 
 const StyledMainContainer = styled("div")(({ theme }) => ({
   margin: "auto 6rem",
@@ -72,13 +73,13 @@ const StyledButton = styled(Button)(({ theme }) => ({}));
 
 const HomePage = () => {
   const navigate = useNavigate();
+
+  const dispatch = useDispatch();
   const { user, isLoading, getAccessTokenSilently } = useAuth0();
-  const [weather, setWeather] = useState([]);
   const [userMetadata, setUserMetadata] = useState(null);
   const [formValue, setFormValue] = useState({});
 
   console.log("userMetadata", userMetadata);
-  console.log("Weather", weather);
 
   useEffect(() => {
     const getUserMetadata = async () => {
@@ -114,12 +115,10 @@ const HomePage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const weatherResponse = await fetchCity(formValue);
-    setWeather(weatherResponse);
+    dispatch( await fetchCityWeather(formValue))
     navigate("/weather-forecast");
   };
 
-  console.log("S", user);
   return (
     <React.Fragment>
       {!isLoading ? (
@@ -141,8 +140,8 @@ const HomePage = () => {
                       <SearchIcon />
                     </SearchIconWrapper>
                     <StyledInputBase
-                      placeholder="City"
-                      inputProps={{ "aria-label": "city" }}
+                      placeholder="Search City"
+                      inputProps={{ "aria-label": "city", autoComplete: "off" }}
                       onChange={handleInput}
                       name={"city"}
                     />
