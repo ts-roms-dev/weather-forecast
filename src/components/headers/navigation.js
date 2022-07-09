@@ -12,7 +12,7 @@ import { useAuth0 } from "@auth0/auth0-react";
 
 const Navigation = () => {
   const { logout, isAuthenticated } = useAuth0();
-  console.log('isAuthenticated', isAuthenticated)
+
   return (
     <AppBar position={"static"}>
       <Container maxWidth={"xl"}>
@@ -34,7 +34,6 @@ const Navigation = () => {
             sx={{
               mr: 2,
               display: { xs: "none", md: "flex" },
-              fontFamily: "monospace",
               fontWeight: 700,
               letterSpacing: ".3rem",
               color: "inherit",
@@ -60,7 +59,6 @@ const Navigation = () => {
                 sx={{
                   mr: 2,
                   display: { xs: "none", md: "flex" },
-                  fontFamily: "monospace",
                   fontWeight: 700,
                   letterSpacing: ".3rem",
                   color: "#fff",
@@ -68,6 +66,7 @@ const Navigation = () => {
                   border: "1px solid rgb(144, 202, 249)",
                   borderRadius: "4px",
                   padding: "5px 15px",
+                  cursor: 'pointer'
                 }}
               >
                 Logout
