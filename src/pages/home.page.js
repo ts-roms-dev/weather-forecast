@@ -11,6 +11,9 @@ import { fetchCityWeather } from "../redux/actions";
 
 const StyledMainContainer = styled("div")(({ theme }) => ({
   margin: "auto 6rem",
+  [theme.breakpoints.up('xs')]: {
+    margin: "auto 1rem",
+  }
 }));
 
 const StyledFormContainer = styled(Container)(({ theme }) => ({
