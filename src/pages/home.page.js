@@ -1,8 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { styled, alpha } from "@mui/material/styles";
 import { Container, Typography, InputBase, Button, Grid } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
+
+import { useAuth0 } from "@auth0/auth0-react";
+import { fetchCity } from "../api/weather.service";
+import Loading from "../components/loading";
 
 const StyledMainContainer = styled("div")(({ theme }) => ({
   margin: "auto 6rem",
@@ -47,7 +51,7 @@ const SearchIconWrapper = styled("div")(({ theme }) => ({
 
 const StyledInputBase = styled(InputBase)(({ theme }) => ({
   color: "inherit",
-  width: '100%',
+  width: "100%",
   "& .MuiInputBase-input": {
     padding: theme.spacing(1, 1, 1, 0),
     paddingLeft: `calc(1em + ${theme.spacing(4)})`,
@@ -64,13 +68,43 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }));
 
-const StyledButton = styled(Button)(({ theme }) => ({
-}));
+const StyledButton = styled(Button)(({ theme }) => ({}));
 
 const HomePage = () => {
   const navigate = useNavigate();
-
+  const { user, isLoading, getAccessTokenSilently } = useAuth0();
+  const [weather, setWeather] = useState([]);
+  const [userMetadata, setUserMetadata] = useState(null);
   const [formValue, setFormValue] = useState({});
+
+  console.log("userMetadata", userMetadata);
+  console.log("Weather", weather);
+
+  useEffect(() => {
+    const getUserMetadata = async () => {
+      const domain = process.env.REACT_APP_DOMAIN;
+
+      try {
+        const accessToken = await getAccessTokenSilently({
+          audience: `https://${domain}/api/v2/`,
+          scope: "read:current_user",
+        });
+
+        const userDetailsByIdUrl = `https://${domain}/api/v2/users/${user?.sub}`;
+        const metadataResponse = await fetch(userDetailsByIdUrl, {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
+        const { user_metadata } = await metadataResponse.json();
+        setUserMetadata(user_metadata);
+      } catch (e) {
+        console.log(e.message);
+      }
+    };
+
+    getUserMetadata();
+  }, [getAccessTokenSilently, user?.sub]);
 
   const handleInput = (e) => {
     e.preventDefault();
@@ -78,47 +112,55 @@ const HomePage = () => {
     setFormValue({ [name]: value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("formValue", formValue);
+    const weatherResponse = await fetchCity(formValue);
+    setWeather(weatherResponse);
     navigate("/weather-forecast");
   };
 
+  console.log("S", user);
   return (
-    <StyledMainContainer>
-      <StyledFormContainer>
-        <StyledDisplayPanel>
-          <Typography variant="p" component="h2">
-            John Doe
-          </Typography>
-          <Typography variant="p" component="h5">
-            Github Link
-          </Typography>
-        </StyledDisplayPanel>
-        <StyledForm onSubmit={handleSubmit}>
-          <Grid container spacing={2}>
-            <Grid item xs={12}>
-              <Search>
-                <SearchIconWrapper>
-                  <SearchIcon />
-                </SearchIconWrapper>
-                <StyledInputBase
-                  placeholder="City"
-                  inputProps={{ "aria-label": "city" }}
-                  onChange={handleInput}
-                  name={'city'}
-                />
-              </Search>
-            </Grid>
-            <Grid item xs={12} style={{ textAlign: 'center' }}>
-              <StyledButton variant="contained" type="submit">
-                Display Weather
-              </StyledButton>
-            </Grid>
-          </Grid>
-        </StyledForm>
-      </StyledFormContainer>
-    </StyledMainContainer>
+    <React.Fragment>
+      {!isLoading ? (
+        <StyledMainContainer>
+          <StyledFormContainer>
+            <StyledDisplayPanel>
+              <Typography variant="p" component="h2">
+                {user?.name}
+              </Typography>
+              <Typography variant="p" component="h5">
+                {user?.sub}
+              </Typography>
+            </StyledDisplayPanel>
+            <StyledForm onSubmit={handleSubmit}>
+              <Grid container spacing={2}>
+                <Grid item xs={12}>
+                  <Search>
+                    <SearchIconWrapper>
+                      <SearchIcon />
+                    </SearchIconWrapper>
+                    <StyledInputBase
+                      placeholder="City"
+                      inputProps={{ "aria-label": "city" }}
+                      onChange={handleInput}
+                      name={"city"}
+                    />
+                  </Search>
+                </Grid>
+                <Grid item xs={12} style={{ textAlign: "center" }}>
+                  <StyledButton variant="contained" type="submit">
+                    Display Weather
+                  </StyledButton>
+                </Grid>
+              </Grid>
+            </StyledForm>
+          </StyledFormContainer>
+        </StyledMainContainer>
+      ) : (
+        <Loading />
+      )}
+    </React.Fragment>
   );
 };
 
