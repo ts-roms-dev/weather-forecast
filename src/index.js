@@ -5,7 +5,7 @@ import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { BrowserRouter } from "react-router-dom";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import { Auth0Provider } from "@auth0/auth0-react";
+import { Auth0ProviderWithRedirectCallback } from "./authentication/auth-provider";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 const theme = createTheme({
@@ -22,19 +22,19 @@ const theme = createTheme({
 
 const app = (
   <ThemeProvider theme={theme}>
-    <Auth0Provider
-      domain={process.env.REACT_APP_DOMAIN}
-      clientId={process.env.REACT_APP_CLIENT_ID}
-      redirectUri={process.env.REACT_APP_REDIRECT_URI}
-      audience={process.env.REACT_APP_AUDIENCE}
-      scope={process.env.REACT_APP_SCOPE}
-    >
-      <BrowserRouter>
+    <BrowserRouter>
+      <Auth0ProviderWithRedirectCallback
+        domain={process.env.REACT_APP_DOMAIN}
+        clientId={process.env.REACT_APP_CLIENT_ID}
+        redirectUri={process.env.REACT_APP_REDIRECT_URI}
+        audience={process.env.REACT_APP_AUDIENCE}
+        scope={process.env.REACT_APP_SCOPE}
+      >
         <React.StrictMode>
           <App />
         </React.StrictMode>
-      </BrowserRouter>
-    </Auth0Provider>
+      </Auth0ProviderWithRedirectCallback>
+    </BrowserRouter>
   </ThemeProvider>
 );
 root.render(app);
