@@ -2,6 +2,7 @@ import React from "react";
 import { styled } from "@mui/material/styles";
 import { Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from 'react-redux';
 import {
   Typography,
   TableContainer,
@@ -25,19 +26,20 @@ const StyledButton = styled(Button)(({ theme }) => ({
   width: "15%",
 }));
 
-const WeatherPage = (props) => {
+const WeatherPage = () => {
   const navigate = useNavigate();
 
-  const weather = [
-    {
-      date: "09/01/2022",
-      temp: "75",
-      description: "Sky is Clear",
-      main: "Clear",
-      pressure: "1023.86",
-      humidity: "100",
-    },
-  ];
+  const weather = useSelector((state) => state.weatherReducer.weather)
+  // const weather = [
+  //   {
+  //     date: "09/01/2022",
+  //     temp: "75",
+  //     description: "Sky is Clear",
+  //     main: "Clear",
+  //     pressure: "1023.86",
+  //     humidity: "100",
+  //   },
+  // ];
 
   const handleBackButton = (e) => {
     e.preventDefault();
@@ -45,20 +47,19 @@ const WeatherPage = (props) => {
   };
 
   const mapWeather = (weather) => {
-    let weatherData = null;
     if (weather) {
-      weatherData = weather?.map((forecast, key) => (
-        <TableRow key={key}>
-          <TableCell>{forecast.date}</TableCell>
-          <TableCell>{forecast.temp}</TableCell>
-          <TableCell>{forecast.description}</TableCell>
-          <TableCell>{forecast.main}</TableCell>
-          <TableCell>{forecast.pressure}</TableCell>
-          <TableCell>{forecast.humidity}</TableCell>
+      return  (
+        <TableRow>
+          <TableCell>{weather.current?.last_updated}</TableCell>
+          <TableCell>{weather.current?.temp_c}</TableCell>
+          <TableCell>{weather.current?.condition.text}</TableCell>
+          <TableCell>{weather.current?.wind_dir}</TableCell>
+          <TableCell>{weather.current?.pressure_in}</TableCell>
+          <TableCell>{weather.current?.humidity}</TableCell>
         </TableRow>
-      ));
+      );
     }
-    weatherData = (
+    return (
       <TableRow>
         <TableCell
           colSpan={6}
@@ -68,14 +69,13 @@ const WeatherPage = (props) => {
         </TableCell>
       </TableRow>
     );
-    return weatherData;
   };
 
   return (
     <StyledMainContainer>
       <TableContainer component={Paper} style={{ marginTop: "6rem" }}>
         <Typography variant="p" component="h2" style={{ margin: "1rem" }}>
-          Weather Forecast
+          Weather Forecast: {weather.location?.name}
         </Typography>
         <Table sx={{ minWidth: 650 }} aria-label="weather-table">
           <TableHead>
