@@ -6,6 +6,8 @@ import reportWebVitals from "./reportWebVitals";
 import { BrowserRouter } from "react-router-dom";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { Auth0ProviderWithRedirectCallback } from "./authentication/auth-provider";
+import { Provider } from "react-redux";
+import store from './redux/store'
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 const theme = createTheme({
@@ -21,6 +23,7 @@ const theme = createTheme({
 });
 
 const app = (
+  <Provider store={store}>
   <ThemeProvider theme={theme}>
     <BrowserRouter>
       <Auth0ProviderWithRedirectCallback
@@ -36,6 +39,7 @@ const app = (
       </Auth0ProviderWithRedirectCallback>
     </BrowserRouter>
   </ThemeProvider>
+  </Provider>
 );
 root.render(app);
 
