@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
-import { useNavigate } from 'react-router-dom'
-import { useDispatch } from 'react-redux';
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
 import { styled, alpha } from "@mui/material/styles";
 import { Container, Typography, InputBase, Button, Grid } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
@@ -75,37 +75,10 @@ const HomePage = () => {
   const navigate = useNavigate();
 
   const dispatch = useDispatch();
-  const { user, isLoading, getAccessTokenSilently } = useAuth0();
-  const [userMetadata, setUserMetadata] = useState(null);
+  const { user, isLoading } = useAuth0();
   const [formValue, setFormValue] = useState({});
+  const [error, setError] = useState("");
 
-  console.log("userMetadata", userMetadata);
-
-  useEffect(() => {
-    const getUserMetadata = async () => {
-      const domain = process.env.REACT_APP_DOMAIN;
-
-      try {
-        const accessToken = await getAccessTokenSilently({
-          audience: `https://${domain}/api/v2/`,
-          scope: "read:current_user",
-        });
-
-        const userDetailsByIdUrl = `https://${domain}/api/v2/users/${user?.sub}`;
-        const metadataResponse = await fetch(userDetailsByIdUrl, {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        });
-        const { user_metadata } = await metadataResponse.json();
-        setUserMetadata(user_metadata);
-      } catch (e) {
-        console.log(e.message);
-      }
-    };
-
-    getUserMetadata();
-  }, [getAccessTokenSilently, user?.sub]);
 
   const handleInput = (e) => {
     e.preventDefault();
@@ -115,8 +88,11 @@ const HomePage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    dispatch( await fetchCityWeather(formValue))
-    navigate("/weather-forecast");
+    const response = dispatch(await fetchCityWeather(formValue));
+    if (response.payload !== undefined) {
+      navigate("/weather-forecast");  
+    }
+    setError("No matching location found.");
   };
 
   return (
@@ -128,9 +104,13 @@ const HomePage = () => {
               <Typography variant="p" component="h2">
                 {user?.name}
               </Typography>
-              <Typography variant="p" component="h5">
-                {user?.sub}
+              <Typography variant="p" component="a" href={'https://github.com/ts-roms/weather-forecast'} sx={{ cursor: 'pointer'}}>
+                https://github.com/ts-roms/weather-forecast
               </Typography>
+              {error ? (<Typography variant="p" component="h5" sx={{ mt: 3, color: 'red'}}>
+                  {error}
+                </Typography>
+              ) : null}
             </StyledDisplayPanel>
             <StyledForm onSubmit={handleSubmit}>
               <Grid container spacing={2}>
