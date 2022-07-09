@@ -8,9 +8,11 @@ import {
   IconButton,
 } from "@mui/material";
 import { Menu as MenuIcon } from "@mui/icons-material";
+import { useAuth0 } from "@auth0/auth0-react";
 
 const Navigation = () => {
-  const authenticated = true;
+  const { logout, isAuthenticated } = useAuth0();
+  console.log('isAuthenticated', isAuthenticated)
   return (
     <AppBar position={"static"}>
       <Container maxWidth={"xl"}>
@@ -41,7 +43,7 @@ const Navigation = () => {
           >
             Weather Forecast
           </Typography>
-          {!authenticated ? (
+          {isAuthenticated ? (
             <Box
               sx={{
                 flexGrow: 0,
@@ -54,7 +56,7 @@ const Navigation = () => {
                 variant="h6"
                 noWrap
                 component="a"
-                href="/"
+                onClick={() => logout({ returnTo: window.location.origin })}
                 sx={{
                   mr: 2,
                   display: { xs: "none", md: "flex" },

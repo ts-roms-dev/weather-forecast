@@ -1,9 +1,7 @@
 import React from "react";
 import { styled } from "@mui/material/styles";
-
 import { Typography } from "@mui/material";
-
-import { useNavigate } from "react-router-dom";
+import { useAuth0 } from "@auth0/auth0-react";
 
 const StyledMainContainer = styled("div")(({ theme }) => ({
   width: "100%",
@@ -16,11 +14,10 @@ const StyledPageContainer = styled("div")(({ theme }) => ({
 }));
 
 const LandingPage = () => {
-  const navigate = useNavigate();
+  const { loginWithRedirect } = useAuth0();
 
   const handleLoginClick = () => {
-    // handleGithubLogin
-    navigate("/home");
+    loginWithRedirect()
   };
 
   return (
