@@ -16,7 +16,7 @@ const Navigation = () => {
   return (
     <AppBar position={"static"}>
       <Container maxWidth={"xl"}>
-        <Toolbar>
+        <Toolbar sx={{ justifyContent: { xs: 'space-between' }}} >
           <IconButton
             size="large"
             edge="start"
@@ -58,7 +58,7 @@ const Navigation = () => {
                 onClick={() => logout({ returnTo: window.location.origin })}
                 sx={{
                   mr: 2,
-                  display: { xs: "none", md: "flex" },
+                  display: { md: "flex" },
                   fontWeight: 700,
                   letterSpacing: ".3rem",
                   color: "#fff",
@@ -66,7 +66,8 @@ const Navigation = () => {
                   border: "1px solid rgb(144, 202, 249)",
                   borderRadius: "4px",
                   padding: "5px 15px",
-                  cursor: 'pointer'
+                  cursor: 'pointer',
+                  justifyCotent: { xs: 'end'}
                 }}
               >
                 Logout

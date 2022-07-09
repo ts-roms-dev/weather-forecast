@@ -13,6 +13,9 @@ const StyledPageContainer = styled("div")(({ theme }) => ({
   padding: "0 30vw",
   margin: "auto",
   flexWrap: "wrap",
+  [theme.breakpoints.up('xs')]: {
+    padding: "0 9vw",
+  }
 }));
 
 const LandingPage = () => {

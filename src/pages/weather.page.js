@@ -18,6 +18,9 @@ import Loading from "../components/loading";
 
 const StyledMainContainer = styled("div")(({ theme }) => ({
   margin: "auto 6rem",
+  [theme.breakpoints.up('xs')]: {
+    margin: "auto 2rem",
+  }
 }));
 
 const StyledButton = styled(Button)(({ theme }) => ({
@@ -41,16 +44,18 @@ const WeatherPage = () => {
     navigate(-1);
   };
 
-  const mapWeather = (weather) => {
-    if (weather !== undefined) {
+  const mapWeather = (data) => {
+    const currentDate = new Date();
+    const strDate = currentDate.toDateString();
+    if (data) {
       return (
         <TableRow>
-          <TableCell>{weather?.current?.last_updated}</TableCell>
-          <TableCell>{weather?.current?.temp_c}</TableCell>
-          <TableCell>{weather?.current?.condition.text}</TableCell>
-          <TableCell>{weather?.current?.wind_dir}</TableCell>
-          <TableCell>{weather?.current?.pressure_in}</TableCell>
-          <TableCell>{weather?.current?.humidity}</TableCell>
+          <TableCell>{strDate}</TableCell>
+          <TableCell>{data?.main?.temp}</TableCell>
+          <TableCell sx={{display: { xs: 'none', sm: 'table-cell', md: 'table-cell' } }}>{data.weather[0]?.description}</TableCell>
+          <TableCell sx={{display: { xs: 'none', sm: 'table-cell', md: 'table-cell' } }}>{data.weather[0]?.main}</TableCell>
+          <TableCell sx={{display: { xs: 'none', sm: 'table-cell', md: 'table-cell' } }}>{data?.main?.pressure}</TableCell>
+          <TableCell sx={{display: { xs: 'none', sm: 'table-cell', md: 'table-cell' } }}>{data?.main?.humidity}</TableCell>
         </TableRow>
       );
     }
@@ -72,17 +77,17 @@ const WeatherPage = () => {
         <Grid container>
           <TableContainer component={Paper} style={{ marginTop: "6rem" }}>
             <Typography variant="p" component="h2" style={{ margin: "1rem" }}>
-              Weather Forecast: {weather?.location?.name}
+              Weather Forecast: {weather?.name}
             </Typography>
-            <Table sx={{ minWidth: 650 }} aria-label="weather-table">
+            <Table aria-label="weather-table">
               <TableHead>
                 <TableRow>
                   <TableCell>Date</TableCell>
                   <TableCell>Temp</TableCell>
-                  <TableCell>Description</TableCell>
-                  <TableCell>Main</TableCell>
-                  <TableCell>Pressure</TableCell>
-                  <TableCell>Humidity</TableCell>
+                  <TableCell sx={{display: { xs: 'none', sm: 'table-cell', md: 'table-cell' } }}>Description</TableCell>
+                  <TableCell sx={{display: { xs: 'none', sm: 'table-cell', md: 'table-cell' } }}>Main</TableCell>
+                  <TableCell sx={{display: { xs: 'none', sm: 'table-cell', md: 'table-cell' } }}>Pressure</TableCell>
+                  <TableCell sx={{display: { xs: 'none', sm: 'table-cell', md: 'table-cell' } }}>Humidity</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>{mapWeather(weather)}</TableBody>
