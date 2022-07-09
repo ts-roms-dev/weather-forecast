@@ -77,7 +77,7 @@ const LandingPage = () => {
               }}
               onClick={() => navigate('/home')}
             >
-              Forecast the City Weather
+              Let's forecast the City Weather
             </Typography>
           )}
         </StyledPageContainer>
