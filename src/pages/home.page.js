@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { styled, alpha } from "@mui/material/styles";
@@ -7,7 +7,7 @@ import SearchIcon from "@mui/icons-material/Search";
 
 import { useAuth0 } from "@auth0/auth0-react";
 import Loading from "../components/loading";
-import { fetchCityWeather } from "../redux/actions";
+import { fetchCityWeather, getUserRepository } from "../redux/actions";
 
 const StyledMainContainer = styled("div")(({ theme }) => ({
   margin: "auto 6rem",
@@ -81,7 +81,17 @@ const HomePage = () => {
   const { user, isLoading } = useAuth0();
   const [formValue, setFormValue] = useState({});
   const [error, setError] = useState("");
+  const [userRepository, setUserRepository] = useState({});
 
+  useEffect(() => {
+    const getUserRepositories = async () => {
+      if (user?.nickname) {
+        const userRepo = dispatch(await getUserRepository(user?.nickname))
+        setUserRepository(userRepo.payload);
+      }
+    };
+    getUserRepositories();
+  }, [user, dispatch])
 
   const handleInput = (e) => {
     e.preventDefault();
@@ -108,7 +118,7 @@ const HomePage = () => {
                 {user?.name}
               </Typography>
               <Typography variant="p" component="a" href={'https://github.com/ts-roms/weather-forecast'} sx={{ cursor: 'pointer'}}>
-                https://github.com/ts-roms/weather-forecast
+                {userRepository[0]?.owner?.html_url}
               </Typography>
               {error ? (<Typography variant="p" component="h5" sx={{ mt: 3, color: 'red'}}>
                   {error}
