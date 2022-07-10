@@ -16,7 +16,7 @@ const Navigation = () => {
   return (
     <AppBar position={"static"}>
       <Container maxWidth={"xl"}>
-        <Toolbar sx={{ justifyContent: { xs: 'space-between' }}} >
+        <Toolbar>
           <IconButton
             size="large"
             edge="start"
@@ -47,7 +47,7 @@ const Navigation = () => {
               sx={{
                 flexGrow: 0,
                 display: "flex",
-                width: "70%",
+                width: { xs: '85%', md: '70%'},
                 justifyContent: "flex-end",
               }}
             >
