@@ -117,7 +117,7 @@ const HomePage = () => {
               <Typography variant="p" component="h2">
                 {user?.name}
               </Typography>
-              <Typography variant="p" component="a" href={'https://github.com/ts-roms/weather-forecast'} sx={{ cursor: 'pointer'}}>
+              <Typography variant="p" component="a" href={userRepository[0]?.owner?.html_url} sx={{ cursor: 'pointer'}}>
                 {userRepository[0]?.owner?.html_url}
               </Typography>
               {error ? (<Typography variant="p" component="h5" sx={{ mt: 3, color: 'red'}}>
